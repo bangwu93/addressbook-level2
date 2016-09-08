@@ -8,14 +8,18 @@ import java.util.Objects;
  * Represents a Person in the address book.
  * Guarantees: details are present and not null, field values are validated.
  */
-public class Person implements ReadOnlyPerson {
+public class Person implements ReadOnlyPerson, Printable{
 
     private Name name;
     private Phone phone;
     private Email email;
     private Address address;
+    
 
     private final UniqueTagList tags;
+    private static int DEFAULTSEQUENCENUMBER = 1;
+    private int sequenceNumber = DEFAULTSEQUENCENUMBER;
+    private static int nextSequenceNumber;
     /**
      * Assumption: Every field must be present and not null.
      */
@@ -25,11 +29,21 @@ public class Person implements ReadOnlyPerson {
         this.email = email;
         this.address = address;
         this.tags = new UniqueTagList(tags); // protect internal tags from changes in the arg list
+        //question: how can this be SLAPPED?
+        if (sequenceNumber != DEFAULTSEQUENCENUMBER) {
+        	sequenceNumber = nextSequenceNumber;
+        	nextSequenceNumber++;
+        } else {
+        	sequenceNumber = DEFAULTSEQUENCENUMBER;
+        	nextSequenceNumber = DEFAULTSEQUENCENUMBER + 1;
+        }
     }
 
     /**
      * Copy constructor.
      */
+
+    
     public Person(ReadOnlyPerson source) {
         this(source.getName(), source.getPhone(), source.getEmail(), source.getAddress(), source.getTags());
     }
@@ -83,5 +97,13 @@ public class Person implements ReadOnlyPerson {
     public String toString() {
         return getAsTextShowAll();
     }
-
+    
+    public String getPrintableString(Printable... printable) {
+    	String output = "";
+    	while (Printable s : printable) {
+    		output = output + s.getPrintable();
+    	}
+    	return output;
+    }
+    
 }

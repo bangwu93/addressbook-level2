@@ -6,27 +6,37 @@ import seedu.addressbook.data.exception.IllegalValueException;
  * Represents a Person's address in the address book.
  * Guarantees: immutable; is valid as declared in {@link #isValidAddress(String)}
  */
-public class Address extends Contact implements Printable{
+public class Address {
 
     public static final String EXAMPLE = "123, some street";
     public static final String MESSAGE_ADDRESS_CONSTRAINTS = "Person addresses can be in any format";
     public static final String ADDRESS_VALIDATION_REGEX = ".+";
-
+    
     public final String value;
     private boolean isPrivate;
-
+    public Block block;
+    public PostalCode postalCode;
+    public Street streetName;
+    public Unit unitName;
+ 
     /**
      * Validates given address.
      *
      * @throws IllegalValueException if given address string is invalid.
      */
-    
     public Address(String address, boolean isPrivate) throws IllegalValueException {
         this.isPrivate = isPrivate;
         if (!isValidAddress(address)) {
             throw new IllegalValueException(MESSAGE_ADDRESS_CONSTRAINTS);
         }
-        this.value = address;
+        value = address;
+        
+        String[] addressParts = value.split(",");
+        block = new Block(addressParts[0]);
+        streetName = new Street(addressParts[1]);
+        unitName = new Unit(addressParts[2]);
+        postalCode = new PostalCode(addressParts[3]);
+   
     }
 
     /**
@@ -38,7 +48,8 @@ public class Address extends Contact implements Printable{
 
     @Override
     public String toString() {
-        return value;
+    	return (block.getBlockNumber() + " " + streetName.getstreetName() + " " + unitName.getunitNumber() + " " + postalCode.getPostalCodeNumber()); 
+       // return value;
     }
 
     @Override
@@ -56,9 +67,4 @@ public class Address extends Contact implements Printable{
     public boolean isPrivate() {
         return isPrivate;
     }
-
-	@Override
-	public String getPrintable() {
-		return ("Address: " + value);
-	}
 }
